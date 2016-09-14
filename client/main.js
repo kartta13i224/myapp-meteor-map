@@ -3,40 +3,28 @@
 
 import './main.html';
 
-suomi_gps= new Mongo.Collection('suomi_gps');
+////suomi_gps= new Mongo.Collection('suomi_gps');
+	
+Template.hello.onCreated(function helloOnCreated(){
+	Session.set('cityText', 'ALOITUS TEKSTI');
+});
 
-if(Meteor.isServer){
-    console.log("Hello server!");
-}
 
-if(Meteor.isClient){
-    console.log("Hello client");
+Template.hello.helpers({
 	
-	
-	Template.hello.onCreated(function helloOnCreated(){
-		Session.set('cityText', 'ALOITUS TEKSTI');
-	});
-	
-	
-	Template.hello.helpers({
-		
-		city(){
-			return Session.get('cityText');
-		},
-	});
-	
-	
-	Template.hello.events({
-		'click .test'(event, instance){
-			console.log(Session.get('cityText'));
-			Session.set('cityText', 'MUUTTUNUT TEKSTI');
-			console.log(Session.get('cityText'));
-		},
+	city(){
+		return Session.get('cityText');
+	},
+});
 
-	});
-	
-}
 
+Template.hello.events({
+	'click .test'(event, instance){
+		console.log(Session.get('cityText'));
+		Session.set('cityText', 'MUUTTUNUT TEKSTI');
+		console.log(Session.get('cityText'));
+	},
+});
 
 
 
