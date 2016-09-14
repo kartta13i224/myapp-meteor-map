@@ -1,5 +1,7 @@
 //import { Meteor } from 'meteor/meteor';
 
+
+
 Meteor.startup(() => {
   // code to run on server at startup
 
@@ -48,5 +50,8 @@ Meteor.startup(() => {
 		suomi_gps.insert({place1:"Helsinki",place2:"Imatra",dist:260});
 		suomi_gps.insert({place1:"Helsinki",place2:"Turku",dist:160});
 		*/
-		
 });
+
+Meteor.publish('GetPlacesDistinct', function() {
+	return suomi_gps.distinct(place1);
+});	
