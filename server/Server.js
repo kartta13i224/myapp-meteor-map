@@ -79,71 +79,189 @@ Meteor.methods({
 	},
 	
 	// Ottaa sisäänsä kahden kaupungin tiedot ja laskee niiden välisen lyhimmän välimatkan.
+	// Method takes two cities names and then calculates the shortest route between them,
+	// Returning the shortest path and the total distance in between, using following format:
+	/*
+		result = {
+			route:[
+				{place:"1st city's name", dist:"distance from the last place in km"},
+				{etc.}
+			]
+			totalDist:"Total distance in km"
+		}
+	*/
 	'calculateDistance'({city1, city2}){
 		
-		// Haetaan kaikki data mongosta ja sijoitetaan listaan.
+		console.log("City1: " + city1);
+		console.log("City2: " + city2);
+		
+		// Fetches all the map routing data from MongoDB
 		var cities = suomi_gps.find().fetch();
 		
-		// Karsitaan aluepaikkaan sitoutuneet edestakaisuudet.
-		// Place1 = aloitus paikka, Place2 = seuraava paikka.
-		// if ("Place1 = Seuraava paikka, Place1 = aloituspaikka" == totta) DELET THIS
+		// Has functions that makes it possible to search and find data from the MongoDBs result.
+		var find = function(){
+			return {
+				
+				// Search given city's neighbours into an array.
+				Neighbours: function(city){
+					
+					var Nbs = [];
+					for (var cityLoop = 0; cityLoop < cities.length; cityLoop++){
+						// If given city matches the place1, add it's neighbour to list.
+						if (cities[cityLoop].place1 == city){
+							// Creates a temporary neighbour object and fills it with the necessary data:
+							// What neighbouring city is it and what is the distance.
+							var neighbour = {toCity:cities[cityLoop].place2, dist:cities[cityLoop].dist};
+							
+							// Push it into an array.
+							Nbs.push(neighbour)
+						}
+					}
+					console.log(Nbs);
+					return Nbs;
+				},
+				
+				// Dijkstra algorithm function. Takes in the "table" object for calculations.
+				Dijkstra: function(distList){
+					
+					// Logical test, if null, don't do anything.
+					if (distList == null){
+						return;
+					}
+					
+					/*
+					            Spot v = sp;
+            do
+            {
+                
+
+                foreach (var w in v.Neighbours)
+                {
+                    if (!w.Known)
+                    {
+                        if (v.Distance + GetDistance(v.Name, w.Name) < w.Distance)
+                        {
+                            w.Distance = v.Distance + GetDistance(v.Name, w.Name);
+                            w.Path = v;
+                        }
+                    }
+                }
+                v.Known = true;
+
+                v = null;
+                int min = Int16.MaxValue;
+                foreach (Spot s in Spots)
+                {
+                    if (s.Path == null || s.Distance == Int16.MaxValue || s.Known)
+                    {
+                        continue;
+                    }
+
+                    for (int i = 0; i < s.Neighbours.Count; i++)
+                    {
+                        var dist = GetDistance(s.Name, s.Neighbours.ElementAt(i).Name) + s.Distance;
+                        if (dist < min && !s.Neighbours.ElementAt(i).Known)
+                        {
+                            min = dist;
+                            v = s.Neighbours.ElementAt(i);
+                        }
+                    }
+                }
+            }
+            while (v != null);
+					*/
+					
+					
+				}
+			}
+		}
+		
+		
+		// Splices off unnecessary entries that will not be used in the calculations (reduces loops in algorithms)
+		// Place1 = starting city, Place2 = next city (neighbour)
+		// if next city has a connection to starting city, going back and forth between cities is never the shortest route.		
 		for (var cityLoop = 0; cityLoop < cities.length; cityLoop++){
-			if (cities[cityLoop].place2 == "city1"){
+			if (cities[cityLoop].place2 == city1){
+				console.log("Takaisinpäin katselmointi poistettu!");
 				cities.splice(cityLoop, 1);
 				cityLoop--;
 			}
 		}
 		
-		// Tulostus client päälle testiksi.
-		return cities;
 		
+		// Get list of distinctCities from MongoDB, which will be used to fill into distList later.
+		var distinctCities = _.uniq(suomi_gps.find({},{
+			sort: {place1: 1}, fields: {place1: true}
+			}).fetch().map(function(x){
+				return x.place1;
+		}), true);
 		
-		
-		
-		// Aloitetaan katselmointi ensimmäisestä pisteestä aloittaen. Loop.
-		// Kun jonkin pisteen seuraavat ehdot kaikki täyttyvät, piste karsitaan pois (DELET THIS):
-		// - Kyseisen pisteen jokainen reitti on katselmoitu lävitse.
-		// - Kyseisen pisteen jokaisen päässä olevan pisteen reitit on katselmoitu lävitse.
-		// - Kyseisten edelliste mainitsemien pisteiden reitit ovat todettu pitemmiksi kuin muut vaihtoehdot.
-		
-		// Kun lyhin reitti on löydetty, saadaan se Path muuttujan kautta tulostettua,
-		// aloittaen päätöspisteestä.
-		
-	
-		
-		/*
-			Place1 = City1
-			Place2 = City2
-			
-			place1
-			suomi_gps.insert({place1:"Oulu",place2:"Kajaani",dist:180});
-			suomi_gps.insert({place1:"Oulu",place2:"Kuopio",dist:290});
-			suomi_gps.insert({place1:"Oulu",place2:"Vaasa",dist:320});
-			
-			
-			
-			!place2
-			suomi_gps.insert({place1:"Jämsä",place2:"Kuopio",dist:203});
-			suomi_gps.insert({place1:"Jämsä",place2:"Mikkeli",dist:167});
-			suomi_gps.insert({place1:"Jämsä",place2:"Tampere",dist:100});
-			suomi_gps.insert({place1:"Jämsä",place2:"Helsinki",dist:225});
-			
-		*/
+		// Create "table" which will be used for Dijksta calculations.
+		// The "table" object consists from following parts:
 		
 		// place = place of the object.
 		// known = if the is known and checked. F = false, T = true.
-		// Dt = Total Distance from starting point.
+		// Dt = Total Distance from starting point. X means infinite.
 		// Path = From which place the Total Distance is calculated from.
+		// Nbs = array of Neighbours
+		
 		/*
 		var distList = [
-			{place:"", known:"F", Dt:"", Path:""},
-			{place:"", known:"F", Dt:"", Path:""},
-			{place:"", known:"F", Dt:"", Path:""},	
-			{place:"", known:"F", Dt:"", Path:""},
-		
+			{place:"", known:"F", Dt:"", Path:"", Nbs:[]},
+			{etc.}
 		];
+		
+		// Neighbour array's construction.
+		// toCity = from which city
+		// dist = distance from the named city
+		
+		Nbs = [
+			{toCity:"", dist:""}
+		]
 		*/
 		
+		var distList = [];
+		
+		// Create find() function. It will be called later in the loops.
+		FIND = find();
+		
+		// Loop through all the different cities and push them into distList as seperate objects.
+		// NOTE: Does not check if the city already exists in distList.
+		// It expects that distinctCities has no duplicate entries.
+		for (var cityLoop = 0; cityLoop < distinctCities.length; cityLoop++){
+			// For each different city, create temporary object and for it's Neighbours array (Nbs), call FIND.Neighbours() function.
+			// Sets all cities known to F (false) as they have not been processed and X meaning infinite distance.
+			var tempPlace;
+			// If the current object in distinctCities is the starting point, set it to known (T as true) and distance (Dt as 0).
+			if (distinctCities[cityLoop] == city1){
+				tempPlace = {place:distinctCities[cityLoop], known:"T", Dt:"0", Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
+			}
+			else {
+				tempPlace = {place:distinctCities[cityLoop], known:"F", Dt:"X", Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
+			}
+			
+			distList.push(tempPlace);
+		}
+
+		console.log(distList);
+
+		
+
+		// When all the calculations are done, shortest route can be found by printing the Path values
+		// in reverse, starting from ending location.
+
+		
+		
+		// Return the result to client.
+		return distList;
+		
+		
+		
+	
+
+		
+		
+
 	}
 	
 	

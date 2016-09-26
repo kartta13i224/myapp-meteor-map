@@ -86,7 +86,7 @@ Template.info.events({
 			
 			
 		// Start of call
-		
+		/*
 		Meteor.call('getCityList', {}, (err, res) =>{
 				if (err){
 					alert(err);
@@ -95,7 +95,7 @@ Template.info.events({
 					console.log(res);
 				}
 		});
-		
+		*/
 		// End of call
 	},
 });
