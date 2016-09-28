@@ -67,7 +67,6 @@ Template.info.helpers({
 	},
 });
 	
-	// TODO: Add correct map image to Client.html
 	// TODO: List the cities into the two combo/selection boxes.
 	// TODO: Send request between the two cities (auto or via button press?)
 	// TODO: Show the path result in a sensible format (Starting City - km - Ending City

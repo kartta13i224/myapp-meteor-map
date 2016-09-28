@@ -129,72 +129,34 @@ Meteor.methods({
 						return;
 					}
 					
-					/*
+					
 					// Find the next closest city to view from.
-						var nextCity; // Stores the array number of the closest city.
-						var comparisonDist = Infinity;
-						for (var i = 0; i < cities.length; i++){
-							if (dist != "X" && known === "F"){
-								if (dist < comparisonDist){
-									comparisonDist = dist;
+					var nextCity; // Stores the array number of the closest city.
+					var comparisonDist = Infinity;
+					for (var i = 0; i < distList.length; i++){
+						if (distList[i].known == "F"){
+							if (distList[i].Dt < comparisonDist){
+								comparisonDist = distList[i].Dt;
 									
-									var exists = false;
-									nextCity = i;
-								}
+								nextCity = i;
 							}
 						}
+					}
 
-						cities[nextCity] // View from here.
-					*/
+					// The next city to view: distList[nextCity]
+					console.log(distList[nextCity]);
 					
-					
-					
-					/*
-					            Spot v = sp;
-            do
-            {
-                
-
-                foreach (var w in v.Neighbours)
-                {
-                    if (!w.Known)
-                    {
-                        if (v.Distance + GetDistance(v.Name, w.Name) < w.Distance)
-                        {
-                            w.Distance = v.Distance + GetDistance(v.Name, w.Name);
-                            w.Path = v;
-                        }
-                    }
-                }
-                v.Known = true;
-
-                v = null;
-                int min = Int16.MaxValue;
-                foreach (Spot s in Spots)
-                {
-                    if (s.Path == null || s.Distance == Int16.MaxValue || s.Known)
-                    {
-                        continue;
-                    }
-
-                    for (int i = 0; i < s.Neighbours.Count; i++)
-                    {
-                        var dist = GetDistance(s.Name, s.Neighbours.ElementAt(i).Name) + s.Distance;
-                        if (dist < min && !s.Neighbours.ElementAt(i).Known)
-                        {
-                            min = dist;
-                            v = s.Neighbours.ElementAt(i);
-                        }
-                    }
-                }
-            }
-            while (v != null);
-					*/
-					
+					for (var i = 0; i < distList[nextCity].Nbs){
+						
+					}
+						
+						
 					
 				}
 			}
 		}
+		
+		// INITIALIZING...
 		
 		
 		// Splices off unnecessary entries that will not be used in the calculations (reduces loops in algorithms)
@@ -254,15 +216,22 @@ Meteor.methods({
 			var tempPlace;
 			// If the current object in distinctCities is the starting point, set it to known (T as true) and distance (Dt as 0).
 			if (distinctCities[cityLoop] == city1){
-				tempPlace = {place:distinctCities[cityLoop], known:"T", Dt:"0", Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
+				tempPlace = {place:distinctCities[cityLoop], known:"T", Dt:0, Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
 			}
 			else {
-				tempPlace = {place:distinctCities[cityLoop], known:"F", Dt:"X", Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
+				tempPlace = {place:distinctCities[cityLoop], known:"F", Dt:Infinity, Path:"", Nbs:FIND.Neighbours(distinctCities[cityLoop])};
 			}
 			
 			distList.push(tempPlace);
 		}
 
+		// END INITIALIZATION
+		
+		
+		
+		
+		
+		
 		console.log(distList);
 
 		
