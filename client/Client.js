@@ -1,9 +1,11 @@
 
 import './Client.html';
 
+
 Template.hello.onCreated(function helloOnCreated() {
   // counter starts at 0
   this.counter = new ReactiveVar(0);
+
 });
 
 Template.hello.helpers({
@@ -19,53 +21,59 @@ Template.hello.events({
   },
 });
 
+Template.leadForm.onCreated(function helloOnCreated(){
+	Session.set('dropdownValue', "Please Select 1");
+	Session.set('dropdownValue2', "Please Select 2");
+});
+
 Template.leadForm.helpers({
-    'categories': function(){
-        //return Options.find();
+	'dropdownValue': function() {
+		return Session.get('dropdownValue');
+	},
+	'dropdownValue2': function() {
+		return Session.get('dropdownValue2');
+	},
+	'dropdowntList': function() {
 		return Session.get('startCity');
-    },
-    'isSelected': function(option){
-      var selected = Selected.findOne('SELECTED') ? Selected.findOne('SELECTED').selected : '';
-      return option === selected ? 'selected' : '';
-    },
-	'categories2': function(){
-        //return Options2.find();
-		return Session.get('destinationCity');
-    },
-    'isSelected2': function(option2){
-      var selected2 = Selected2.findOne('SELECTED2') ? Selected2.findOne('SELECTED2').selected2 : '';
-      return option2 === selected2 ? 'selected2' : '';
-    }
+	}
   });
 
+
+  
   Template.leadForm.events({
+
     'click #addOption': function () {
       Options.insert({option: Fake.sentence(3)});
     },
     'change #leadSource2': function(event, template){
       Selected.update('SELECTED', {selected: event.target.value});
     },
-	    'click #addOption2': function () {
+	'click #addOption2': function () {
       Options2.insert({option: Fake.sentence(5)});
     },
     'change #leadSource2': function(event, template){
       Selected2.update('SELECTED2', {selected2: event.target.value});
     }
   })
-
-
-
-Template.info.onCreated(function helloOnCreated(){
+   
+  /*
+Template.dropdowntListItems.rendered = function(){
+    $('.menu').dropdown(); //gets called N times
+}; 
+	*/
 	
-	Session.set('cityText', 'ALOITUS TEKSTI');
+Template.dropdowntListItems.events({
+	'click .itemLink': function(event, template) {
+		Session.set('dropdownValue', template.data);
+	},
+
 });
 
-
-Template.info.helpers({		
-	city(){
-		return Session.get('cityText');
+Template.dropdowntListItems2.events({
+	'click .itemLink2': function(event, template) {
+		Session.set('dropdownValue2', template.data);
 	},
-	
+
 });
 	
 	// TODO: List the cities into the two combo/selection boxes.
@@ -77,8 +85,12 @@ Template.info.helpers({
 	// Or show error to user to not to select same cities.
 	// TODO: Clean Client.js and Client.html of unnecessary stuff.
 	
-Template.info.events({
-	'click .test'(event, instance){
+Template.TestUtilsTemplate.events({
+	'click .createData'(event, instance) {
+		Meteor.call('CreateStuffInDatabase');
+	},
+	
+		'click .test'(event, instance){
 		
 	// Returning the shortest path and the total distance in between, using following format:
 	/*
@@ -121,11 +133,5 @@ Template.info.events({
 		
 		// End of call
 	},
-});
-
-Template.TestUtilsTemplate.events({
-	'click .createData'(event, instance) {
-		Meteor.call('CreateStuffInDatabase');
-	}
 });
 		

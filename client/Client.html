@@ -3,31 +3,49 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-{{> leadForm}}
-  <!--{{> hello}}-->
-  {{> map}}
-  {{> info}}
-  {{> TestUtilsTemplate}}
+  <h1>Welcome to Meteor!</h1>	
+	{{> leadForm}}
+	{{> map}}
+	{{> TestUtilsTemplate}}
 </body>
+
 <template name="leadForm">
-    <form id="newLeadForm">
-    <select class="form-control"  id="leadSource">
-        <option disabled="disabled">Please Select</option>
-        {{#each categories}}
-            <option value="{{this}}" {{isSelected this}}>{{this}}</option>
-        {{/each}}
-    </select>
-	    <select class="form-control"  id="leadSource2">
-        <option disabled="disabled">Please Select</option>
-        {{#each categories}}
-            <option value="{{this}}" {{isSelected2 this}}>{{this}}</option>
-        {{/each}}
-    </select>
+    
+	<form id="newLeadForm">
+		Lähtöpaikka:
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{dropdownValue}}</button>
+			<ul class="dropdown-menu"  id="leadSource"> 
+				{{#each dropdowntList}}
+					<li>
+						{{> dropdowntListItems}}
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+		Määränpää:
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{dropdownValue2}}</button>
+			<ul class="dropdown-menu"  id="leadSource2"> 
+				{{#each dropdowntList}}
+					<li>
+						{{> dropdowntListItems2}}
+					</li>
+				{{/each}}
+			</ul>
+		</div>
     </form>
+	
     <br/>
     <button id='addOption'>Add a new option to Drowdown</button>
 	<button id='addOption2'>Add a new option to Drowdown</button>
+</template>
+
+ <template name="dropdowntListItems">
+     <div><a class="itemLink" role="menuitem" href='#'>{{this}}</a></div>
+</template>
+ <template name="dropdowntListItems2">
+     <div><a class="itemLink2" role="menuitem" href='#'>{{this}}</a></div>
 </template>
 
 <template name="map">
@@ -46,11 +64,8 @@
   <p>You've pressed the button {{counter}} times.</p>
 </template>
 
-<template name="info">
-  <button class="test">Fetch data</button>
-  {{city}}
-</template>
-
 <template name="TestUtilsTemplate">
 	<button class="createData">Create data</button>
+	<button class="test">Fetch data</button>
 </template>
+
