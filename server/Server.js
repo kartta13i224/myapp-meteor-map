@@ -1,28 +1,12 @@
 //import { Meteor } from 'meteor/meteor';
 
-
-
 Meteor.startup(() => {
-  // Create map database
-		
-		/*
-		if (suomi_gps)
-			suomi_gps._dropCollection();
-		*/
-		
-		suomi_gps = new Mongo.Collection('suomi_gps');
-		console.log("METEORITE ON AUKI");
-		// Code ran only once, commented for future purposes if recreating it.
-		
-
-		
+	suomi_gps = new Mongo.Collection('suomi_gps');
 });
 
 // Laskenta koodi.
 
-
 Meteor.methods({
-	
 	// Koodi palauttaa tietokannassa olevan listan kaikista eri kaupungeista.
 	'getCityList'({}){
 		
@@ -35,7 +19,6 @@ Meteor.methods({
 	
 		return distinctCities;
 	},
-	
 	
 	// Method takes two cities names and then calculates the shortest route between them,
 	// Returning the shortest path and the total distance in between, using following format:
@@ -50,15 +33,6 @@ Meteor.methods({
 		city1 is starting point and cit2 is ending point.
 	*/
 	'calculateDistance'({city1, city2}){
-		
-		//console.log("City1: " + city1);
-		//console.log("City2: " + city2);
-		
-		// MOCK DATA
-		city1 = "Turku";
-		city2 = "Kajaani";
-		
-		
 		// Fetches all the map routing data from MongoDB
 		var cities = suomi_gps.find().fetch();
 		
@@ -82,7 +56,6 @@ Meteor.methods({
 						}
 					}
 					
-					//console.log(Nbs);
 					return Nbs;
 				},
 				
@@ -105,14 +78,11 @@ Meteor.methods({
 						// Loops through the distList checking the next shortest city that is not known (T) yet.
 						for (var i = 0; i < distList.length; i++){
 							
-							
 							// Check that the city is not known (already checked).
 							if (distList[i].known != "T"){
-								//console.log("Trying not known city number " + i);
 								// Check that it has shorter distance than comparisonDist.
 								if (distList[i].Dt < comparisonDist){
 									comparisonDist = distList[i].Dt;
-									//console.log("Found a closer city!");
 									nextCity = i;
 								}
 							}
@@ -136,7 +106,6 @@ Meteor.methods({
 						]
 						*/
 						
-						
 						// Logical test.
 						if (nextCity != null){
 
@@ -158,16 +127,7 @@ Meteor.methods({
 
 									// Check that names match and distance is less than calculated.
 									if (distList[nextCity].Nbs[i].toCity == distList[j].place
-									&& tempDistance < distList[j].Dt){
-										/*
-										console.log("Name same and distance accepted!");
-										console.log("Current neighbour data: ");
-										console.log(distList[nextCity].Nbs[i]);
-										console.log("Current neighbour viewed: ");
-										console.log(distList[j]);
-										*/
-										
-										
+									&& tempDistance < distList[j].Dt){									
 										// NOTE: Also check that the Neighbour is NOT the city that we are coming from.
 										var isThePlaceWeCameFrom = false; // By default, the neighbour is not the place we came from.
 										
@@ -191,16 +151,12 @@ Meteor.methods({
 											//console.log("Changed city data: " + j);
 											//console.log(distList[j]);
 										}
-
-										
 									}
-									
 								}
 							}
 							
 							//console.log("Set to known.");
 							distList[nextCity].known = "T";
-
 						}
 
 						// By default after calculations, set that no known="F" cities exists.
@@ -217,26 +173,22 @@ Meteor.methods({
 					}
 					
 					return distList;
-
 				}					
-
 			}
 		}
 		
 		// INITIALIZING...
-		
 		
 		// Splices off unnecessary entries that will not be used in the calculations (reduces loops in algorithms)
 		// Place1 = starting city, Place2 = next city (neighbour)
 		// if next city has a connection to starting city, going back and forth between cities is never the shortest route.		
 		for (var cityLoop = 0; cityLoop < cities.length; cityLoop++){
 			if (cities[cityLoop].place2 == city1){
-				console.log("Takaisinpäin katselmointi poistettu!");
+				//console.log("Takaisinpäin katselmointi poistettu!");
 				cities.splice(cityLoop, 1);
 				cityLoop--;
 			}
 		}
-		
 		
 		// Get list of distinctCities from MongoDB, which will be used to fill into distList later.
 		var distinctCities = _.uniq(suomi_gps.find({},{
@@ -244,9 +196,6 @@ Meteor.methods({
 			}).fetch().map(function(x){
 				return x.place1;
 		}), true);
-		
-		
-		
 		
 		// Create "table" which will be used for Dijksta calculations.
 		// The "table" object consists from following parts:
@@ -274,7 +223,6 @@ Meteor.methods({
 		*/
 		
 		var distList = [];
-		
 
 		// Create find() function. It will be called later in the loops.
 		// FIND functions are found above.
@@ -298,13 +246,10 @@ Meteor.methods({
 			distList.push(tempPlace);
 		}
 		
-		// console.log(distList); // Console Log distList after initialization.
 		// END INITIALIZATION
-		
 		
 		// Do Dijkstra Algorithm.
 		distList = FIND.Dijkstra(distList);				
-		//console.log(distList); // Console Log distList after Dijkstra calculation
 
 		// When all the calculations are done, shortest route can be found by printing the Path values
 		// in reverse, starting from ending location.
@@ -328,7 +273,7 @@ Meteor.methods({
 			// Calculate distance between lastPoint and it's nextPoint.
 			// Dijkstra stores total Distance value in Dt, so substract each other.
 			tempDist = distList[lastPoint].Dt - distList[distList[lastPoint].Path].Dt;
-			//console.log("Value of tempDist: " + tempDist);
+			
 			// Add data into temporary Object, the place of the lastPoint and Distance.
 			tempObj = {place:distList[lastPoint].place, dist:tempDist}
 			
@@ -338,7 +283,6 @@ Meteor.methods({
 		
 		// Create result object which has the route array and totalDistance.
 		result = {route, totalDist};
-		
 		
 		// Returning the shortest path and the total distance in between, using following format:
 		/*
@@ -353,15 +297,9 @@ Meteor.methods({
 
 		// Return the result to client.
 		return result;
-
-
 	},
 	'CreateStuffInDatabase': function() {
-		console.log(suomi_gps);
 		suomi_gps.remove({});
-		console.log(suomi_gps);
-		//suomi_gps = new Mongo.Collection('suomi_gps');
-		//console.log(suomi_gps);
 		
 		suomi_gps.insert({place1:"Oulu",place2:"Kajaani",dist:180});
 		suomi_gps.insert({place1:"Oulu",place2:"Kuopio",dist:290});
@@ -406,7 +344,4 @@ Meteor.methods({
 		suomi_gps.insert({place1:"Helsinki",place2:"Turku",dist:160});
 		
 	}
-	
-	
-	
 });

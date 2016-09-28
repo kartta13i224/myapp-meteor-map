@@ -1,71 +1,82 @@
 <head>
-  <title>MYapp</title>
+	<title>Meteor mapping service</title>
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>	
+	<h1>Welcome to Meteor mapping service!</h1>	
 	{{> leadForm}}
 	{{> map}}
 	{{> TestUtilsTemplate}}
 </body>
 
 <template name="leadForm">
-    
-	<form id="newLeadForm">
-		Lähtöpaikka:
-		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{dropdownValue}}</button>
-			<ul class="dropdown-menu"  id="leadSource"> 
-				{{#each dropdowntList}}
-					<li>
-						{{> dropdowntListItems}}
-					</li>
-				{{/each}}
-			</ul>
-		</div>
-		Määränpää:
-		<div class="dropdown">
-			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{dropdownValue2}}</button>
-			<ul class="dropdown-menu"  id="leadSource2"> 
-				{{#each dropdowntList}}
-					<li>
-						{{> dropdowntListItems2}}
-					</li>
-				{{/each}}
-			</ul>
-		</div>
-    </form>
+	<div class="dropdown">
+		From:
+		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+			{{dropdownValue}}
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu"  id="leadSource"> 
+			{{#each dropdowntList}}
+				<li>
+					{{> dropdowntListItems}}
+				</li>
+			{{/each}}
+		</ul>
+	</div>
+	<div class="dropdown">
+		To:
+		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+			{{dropdownValue2}}
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu"  id="leadSource2"> 
+			{{#each dropdowntList}}
+				<li>
+					{{> dropdowntListItems2}}
+				</li>
+			{{/each}}
+		</ul>
+	</div>
 	
-    <br/>
-    <button id='addOption'>Add a new option to Drowdown</button>
-	<button id='addOption2'>Add a new option to Drowdown</button>
+	<br/>
+	
+	{{#if resultValue}}
+		From: {{dropdownValue}} <br>
+		To : {{dropdownValue2}} <br>
+		Distance: {{resultValue.totalDist}} km
+		<br><br>
+		Route:
+		{{dropdownValue}}
+		{{#each resultValue.route}}
+			- {{this.dist}} km - {{this.place}}
+		{{/each}}
+	{{/if}}
+	
 </template>
 
  <template name="dropdowntListItems">
-     <div><a class="itemLink" role="menuitem" href='#'>{{this}}</a></div>
+     <a class="itemLink" role="menuitem" href='#'>{{this}}</a>
 </template>
- <template name="dropdowntListItems2">
-     <div><a class="itemLink2" role="menuitem" href='#'>{{this}}</a></div>
+<template name="dropdowntListItems2">
+     <a class="itemLink2" role="menuitem" href='#'>{{this}}</a>
 </template>
 
 <template name="map">
  
-<div class="mapimage">
+	<div class="mapimage">
 
-<h2>Final land</h2>
-<img id="pics" src="kartta.png" alt="Final Land" style="width:623px;height:547px;">
+	<h2>Final land</h2>
+	<img id="pics" src="kartta.png" alt="Final Land" style="width:623px;height:547px;">
 
-</div>
-</template>
-
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+	</div>
 </template>
 
 <template name="TestUtilsTemplate">
 	<button class="createData">Create data</button>
-	<button class="test">Fetch data</button>
+	<!--
+	<button class="fetchCities">Fetch data</button>
+	<button class="findDistance">Find distance</button>
+	-->
 </template>
 
