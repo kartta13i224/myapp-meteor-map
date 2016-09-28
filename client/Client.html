@@ -5,22 +5,23 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 {{> leadForm}}
-  {{> hello}}
+  <!--{{> hello}}-->
   {{> map}}
   {{> info}}
+  {{> TestUtilsTemplate}}
 </body>
 <template name="leadForm">
     <form id="newLeadForm">
     <select class="form-control"  id="leadSource">
         <option disabled="disabled">Please Select</option>
         {{#each categories}}
-            <option value="{{this.option}}" {{isSelected this.option}}>{{this.option}}</option>
+            <option value="{{this}}" {{isSelected this}}>{{this}}</option>
         {{/each}}
     </select>
 	    <select class="form-control"  id="leadSource2">
         <option disabled="disabled">Please Select</option>
         {{#each categories}}
-            <option value="{{this.option}}" {{isSelected2 this.option2}}>{{this.option}}</option>
+            <option value="{{this}}" {{isSelected2 this}}>{{this}}</option>
         {{/each}}
     </select>
     </form>
@@ -46,7 +47,10 @@
 </template>
 
 <template name="info">
-  <button class="test">Click Me</button>
+  <button class="test">Fetch data</button>
   {{city}}
 </template>
 
+<template name="TestUtilsTemplate">
+	<button class="createData">Create data</button>
+</template>

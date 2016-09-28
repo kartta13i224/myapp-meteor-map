@@ -122,3 +122,10 @@ Template.info.events({
 		// End of call
 	},
 });
+
+Template.TestUtilsTemplate.events({
+	'click .createData'(event, instance) {
+		Meteor.call('CreateStuffInDatabase');
+	}
+});
+		
