@@ -120,7 +120,7 @@ Meteor.methods({
 					console.log(Nbs);
 					return Nbs;
 				},
-				
+				/*
 				// Dijkstra algorithm function. Takes in the "table" object for calculations.
 				Dijkstra: function(distList){
 					
@@ -148,11 +148,9 @@ Meteor.methods({
 					
 					for (var i = 0; i < distList[nextCity].Nbs){
 						
-					}
-						
-						
-					
+					}					
 				}
+				*/
 			}
 		}
 		

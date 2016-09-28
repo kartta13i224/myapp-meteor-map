@@ -19,17 +19,18 @@ Template.hello.events({
   },
 });
 
-
 Template.leadForm.helpers({
     'categories': function(){
-        return Options.find();
+        //return Options.find();
+		return Session.get('startCity');
     },
     'isSelected': function(option){
       var selected = Selected.findOne('SELECTED') ? Selected.findOne('SELECTED').selected : '';
       return option === selected ? 'selected' : '';
     },
 	'categories2': function(){
-        return Options2.find();
+        //return Options2.find();
+		return Session.get('destinationCity');
     },
     'isSelected2': function(option2){
       var selected2 = Selected2.findOne('SELECTED2') ? Selected2.findOne('SELECTED2').selected2 : '';
@@ -60,11 +61,11 @@ Template.info.onCreated(function helloOnCreated(){
 });
 
 
-Template.info.helpers({
-		
+Template.info.helpers({		
 	city(){
 		return Session.get('cityText');
 	},
+	
 });
 	
 	// TODO: List the cities into the two combo/selection boxes.
@@ -113,6 +114,8 @@ Template.info.events({
 				} else {
 					// No errors in input!
 					console.log(res);
+					Session.set('startCity', res);
+					Session.set('destinationCity', res);
 				}
 		});
 		
