@@ -85,7 +85,7 @@ Meteor.methods({
 					//console.log(Nbs);
 					return Nbs;
 				},
-				/*
+				
 				// Dijkstra algorithm function. Takes in the "table" object for calculations.
 				Dijkstra: function(distList){
 					
@@ -120,8 +120,6 @@ Meteor.methods({
 
 						// The next city to view: distList[nextCity]
 						//console.log(distList[nextCity]);
-						
-<<<<<<< HEAD
 						
 						/*
 						var distList = [
@@ -219,12 +217,9 @@ Meteor.methods({
 					}
 					
 					return distList;
-					
-=======
-					}					
->>>>>>> origin/master
-				}
-				*/
+
+				}					
+
 			}
 		}
 		
@@ -358,13 +353,7 @@ Meteor.methods({
 
 		// Return the result to client.
 		return result;
-		
-		
-		
-	
 
-		
-		
 
 	},
 	'CreateStuffInDatabase': function() {
