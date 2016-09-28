@@ -78,7 +78,7 @@ Meteor.methods({
 		return distinctCities;
 	},
 	
-	// Ottaa sisäänsä kahden kaupungin tiedot ja laskee niiden välisen lyhimmän välimatkan.
+	
 	// Method takes two cities names and then calculates the shortest route between them,
 	// Returning the shortest path and the total distance in between, using following format:
 	/*
@@ -128,6 +128,26 @@ Meteor.methods({
 					if (distList == null){
 						return;
 					}
+					
+					/*
+					// Find the next closest city to view from.
+						var nextCity; // Stores the array number of the closest city.
+						var comparisonDist = Infinity;
+						for (var i = 0; i < cities.length; i++){
+							if (dist != "X" && known === "F"){
+								if (dist < comparisonDist){
+									comparisonDist = dist;
+									
+									var exists = false;
+									nextCity = i;
+								}
+							}
+						}
+
+						cities[nextCity] // View from here.
+					*/
+					
+					
 					
 					/*
 					            Spot v = sp;

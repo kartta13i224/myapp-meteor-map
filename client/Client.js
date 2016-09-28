@@ -67,10 +67,29 @@ Template.info.helpers({
 	},
 });
 	
+	// TODO: Add correct map image to Client.html
+	// TODO: List the cities into the two combo/selection boxes.
+	// TODO: Send request between the two cities (auto or via button press?)
+	// TODO: Show the path result in a sensible format (Starting City - km - Ending City
+	// and the full path: City1 - km - City2 - km - City3 etc.)
+	// TODO: If two same cities are selected, do not send request:
+	// Instead show result like this (eg.): City1 - 0 km - City1
+	// Or show error to user to not to select same cities.
+	// TODO: Clean Client.js and Client.html of unnecessary stuff.
 	
 Template.info.events({
 	'click .test'(event, instance){
-			
+		
+	// Returning the shortest path and the total distance in between, using following format:
+	/*
+		result = {
+			route:[
+				{place:"1st city's name", dist:"distance from the last place in km"},
+				{etc.}
+			]
+			totalDist:"Total distance in km"
+		}
+	*/
 		Meteor.call('calculateDistance', {
 			city1: 'Jämsä',
 			city2: 'Tampere'
@@ -86,7 +105,9 @@ Template.info.events({
 			
 			
 		// Start of call
-		/*
+		
+		// Returns a list of cities in an array.
+		// Example: res[0] = Tampere, res[1] = Helsinki etc.
 		Meteor.call('getCityList', {}, (err, res) =>{
 				if (err){
 					alert(err);
@@ -95,7 +116,7 @@ Template.info.events({
 					console.log(res);
 				}
 		});
-		*/
+		
 		// End of call
 	},
 });
